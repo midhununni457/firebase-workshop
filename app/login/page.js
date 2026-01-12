@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth, googleProvider } from "../config/firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+// AUTH: import auth & googleProvider from config file
+// AUTH: import createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup from firebase/auth
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -13,33 +13,33 @@ export default function Login() {
   const handleEmailLogin = async () => {
     try {
       setError("");
-      await createUserWithEmailAndPassword(auth, email, password);
+      // AUTH: create user with email & password
       router.push("/");
     } catch (err) {
-        if (err.code === 'auth/email-already-in-use') {
-            try{
-                await signInWithEmailAndPassword(auth, email, password);
-                router.push("/");
-                return;
-            } catch (error) {
-                setError(error?.message || "Failed to sign in");
-            }
-        } else {
-            setError(err?.message || "Failed to sign up");
+      if (err.code === "auth/email-already-in-use") {
+        try {
+          // AUTH: sign in with email & password
+          router.push("/");
+          return;
+        } catch (error) {
+          setError(error?.message || "Failed to sign in");
         }
+      } else {
+        setError(err?.message || "Failed to sign up");
+      }
     }
   };
 
   const handleGoogleLogin = async () => {
     try {
-        setError("");
-        await signInWithPopup(auth, googleProvider)
-        router.push("/");
-        return;
-    } catch(err) {
-        setError(err?.message || "Failed to sign in with Google");
+      setError("");
+      // AUTH: sign in with popup using auth & googleProvider
+      router.push("/");
+      return;
+    } catch (err) {
+      setError(err?.message || "Failed to sign in with Google");
     }
-  }
+  };
 
   return (
     <div className="h-screen flex flex-col justify-center items-center">
@@ -75,7 +75,10 @@ export default function Login() {
           <span className="px-4 text-zinc-500 text-sm">OR</span>
           <div className="flex-1 border-t border-zinc-600"></div>
         </div>
-        <button onClick={handleGoogleLogin} className="w-2/3 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-3 px-6 rounded-md transition-colors duration-200 flex items-center justify-center gap-3 cursor-pointer">
+        <button
+          onClick={handleGoogleLogin}
+          className="w-2/3 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-3 px-6 rounded-md transition-colors duration-200 flex items-center justify-center gap-3 cursor-pointer"
+        >
           <img src="/google.png" alt="Google" className="w-5 h-5" />
           Sign in with Google
         </button>

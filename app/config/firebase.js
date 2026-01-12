@@ -1,20 +1,7 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+// AUTH: import { getAuth, GoogleAuthProvider } from "firebase/auth";
+// DB: import { getFirestore } from "firebase/firestore";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAGxLSrBHA6czAfaycWFuv_6-6dJKlsqIE",
-  authDomain: "fir-workshop-450d7.firebaseapp.com",
-  projectId: "fir-workshop-450d7",
-  storageBucket: "fir-workshop-450d7.firebasestorage.app",
-  messagingSenderId: "850785430846",
-  appId: "1:850785430846:web:4daa93cb5ca2f8804b506f",
-  measurementId: "G-Q1D26RWXZ9",
-};
+// AUTH: initialize auth(getAuth(app)) & googleProvider(new GoogleAuthProvider())
+// DB: initialize db(getFirestore(app))
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
-const db = getFirestore(app);
-
-export { auth, googleProvider, db };
+// export auth, googleProvider, db
