@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
+import { db } from "../config/firebase";
+
 // UPDATE: import db from config file
 // UPDATE: import getDoc, updateDoc, doc from firebase/firestore
 
@@ -13,6 +15,10 @@ export default function UpdatePost({ params }) {
   useEffect(() => {
     const fetchPost = async () => {
       try {
+        const postSnap = await getDoc(doc(db, "posts", postId))
+        const postData = postSnap.data();
+        setNewTitle(postData.title);
+        setNewDescription(postData.description);
         // UPDATE: fetch post document using getDoc & doc with db, "posts", postId
         // UPDATE: extract data from document snapshot and set newTitle & newDescription states
       } catch (err) {
@@ -24,6 +30,10 @@ export default function UpdatePost({ params }) {
 
   const onUpdatePost = async () => {
     try {
+      await updateDoc(doc(db, "posts", postId), {
+        title: newTitle,
+        description: newDescription,
+      })
       // UPDATE: update document using updateDoc & doc with db, "posts", postId, setting title to newTitle and description to newDescription
       router.push("/");
     } catch (err) {

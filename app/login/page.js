@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { auth, googleProvider } from "../config/firebase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 // AUTH: import auth & googleProvider from config file
 // AUTH: import createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup from firebase/auth
 
@@ -13,11 +15,13 @@ export default function Login() {
   const handleEmailLogin = async () => {
     try {
       setError("");
+      await createUserWithEmailAndPassword(auth, email, password);
       // AUTH: create user with email & password
       router.push("/");
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {
         try {
+          await signInWithEmailAndPassword(auth, email, password);
           // AUTH: sign in with email & password
           router.push("/");
           return;
@@ -33,6 +37,7 @@ export default function Login() {
   const handleGoogleLogin = async () => {
     try {
       setError("");
+      await signInWithPopup(auth, googleProvider)
       // AUTH: sign in with popup using auth & googleProvider
       router.push("/");
       return;

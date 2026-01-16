@@ -1,18 +1,29 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { auth, db } from "../config/firebase";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 // CREATE: import db, auth from config file
 // CREATE: import addDoc, collection, serverTimestamp from firebase/firestore
 
 export default function CreatePost() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const postsCollectionRef = collection(db, "posts");
   // CREATE: initialize postsCollectionRef using collection with db and "posts"
   const router = useRouter();
+  const user = auth.currentUser;
+  const email = user ? user.email : null;
   // CREATE: get current user from auth, and extract email
 
   const onCreatePost = async () => {
     try {
+      await addDoc(postsCollectionRef, {
+        title,
+        description,
+        created_at: serverTimestamp(),
+        user: email,
+      });
       // CREATE: add document to posts collection using reference object with title, description, created_at as serverTimestamp(), user as email
       router.push("/");
     } catch (err) {

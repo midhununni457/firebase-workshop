@@ -1,20 +1,39 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { db, auth } from "./config/firebase";
+import { signOut } from "firebase/auth";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 // LOGOUT: import db, auth from config file
 // LOGOUT: import signOut from firebase/auth
 // FETCH & DELETE: import collection, getDocs, query, orderBy, deleteDoc, doc from firebase/firestore
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
+  const postsCollectionRef = collection(db, "posts");
   // FETCH: initialize postsCollectionRef using collection with db and "posts"
   const router = useRouter();
+  const user = auth.currentUser;
   // HOME: get current user from auth, and extract email
-  const email = null;
+  const email = user ? user.email : null;
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        const q = query(postsCollectionRef, orderBy("created_at", "desc"));
+        const data = await getDocs(q);
+        const filteredData = data.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setPosts(filteredData);
         // FETCH: create query ordering by created_at descending
         // FETCH: fetch documents using getDocs with the query
         // FETCH: map through documents to extract data and id, then setPosts with the resulting array
@@ -27,6 +46,7 @@ export default function Home() {
 
   const handleLogout = async () => {
     try {
+      await signOut(auth);
       // LOGOUT: call signOut with auth
       router.push("/login");
     } catch (err) {
@@ -36,6 +56,7 @@ export default function Home() {
 
   const handleDelete = async (postId) => {
     try {
+      await deleteDoc(doc(db, "posts", postId));
       // DELETE: delete document using deleteDoc & doc with db, "posts", postId
       setPosts(posts.filter((post) => post.id !== postId));
     } catch (err) {
